@@ -45,3 +45,17 @@ while True:
         break
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
+    
+
+# instead of making the center o the screen the middle, maybe we can make the
+# person look to a point than after storing the data of how she should look at 
+# the middle and some extremities, we can calculate how much she moves and than
+# make the movement acordiling.
+
+# Use 2 eyes of only 1
+
+# Prob 2 i believe
+
+# we could make the screen with the (0,0) instead of top left, in the middle,
+# so we could multiply the screen with a variable to make the cursor to move 
+# more than normal.
