@@ -2,16 +2,32 @@ import cv2
 import mediapipe as mp
 import pyautogui
 
+# starts the camera. The number is the index of the cameras connected to your device.
 cam = cv2.VideoCapture(0)
+
+# points of the mesh of the face. (cant explain it better)
 face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
+
+# size of your current screen
 screen_w, screen_h = pyautogui.size()
+
+# disable the mouse to not make it harder to move with eyes
 pyautogui.FAILSAFE = False
 
 while True:
+    # get the frame of the camera.
     _, frame = cam.read()
+    
+    # flips the camera to match (letf -> left)
     frame = cv2.flip(frame, 1)
+
+    # color of the frame
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    
+    # return the landmarks in all the RGB faces detected.
     output = face_mesh.process(rgb_frame)
+
+
     landmark_points = output.multi_face_landmarks
     frame_h, frame_w, _ = frame.shape
     if landmark_points:
