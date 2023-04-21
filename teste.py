@@ -11,8 +11,9 @@ face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
 # size of your current screen
 screen_w, screen_h = pyautogui.size()
 
-x_eye = 0
-y_eye = 0
+# variables to make it possible to use outside the scope
+x_eye_cam = 0
+y_eye_cam = 0
 x = 0
 y = 0
 
@@ -38,24 +39,21 @@ while True:
         # pick only the landmarks of the first detected face
         landmarks = landmark_points[0].landmark
 
+        # points in the face for both eye and the point where the camera will follow
         # prob has better way to do this and maybe it wont perform like suck
         points = landmarks[285:287] + landmarks[474:478]
         
-
-        # loops over landmarks 474-478 (correspond to the four landmarks around the eye
-        # for id, landmark in enumerate(landmarks[474:478]):
-        # two eyes gettted
-        # for id, landmark in enumerate(landmarks[469:478]):
-        # eye lid
-        # for id, landmark in enumerate(landmarks[253:260]):
+        # iterate from the points in the face
         for id, landmark in enumerate(points):
 
-            # stores last position of the landmarks escaling to the frame size
+            # id of landmark for the camera (it can be either 0 or 1)
+            # change for what suits best for you
             if id == 0:
-                x_eye = int(landmark.x * frame_w)
-                y_eye = int(landmark.y * frame_h)
+                x_eye_cam = int(landmark.x * frame_w)
+                y_eye_cam = int(landmark.y * frame_h)
 
-            if id in range(3, 7):
+            # calculate the points of the eye in the frame of the camera (its what is most likely)
+            if id in range(2, 6):
                 x = int(landmark.x * frame_w)
                 y = int(landmark.y * frame_h)
             
@@ -66,14 +64,16 @@ while True:
             # last one is color
             cv2.circle(frame, (x, y), 3, (0, 255, 0))
 
-            eye_frame = frame[y_eye - 20:y_eye + 45, x_eye:x_eye + 60]
+            # make another frame that will follow the eye.
+            # the values is the range of the camera. [start]:[to]
+            eye_frame = frame[y_eye_cam - 20:y_eye_cam + 45, x_eye_cam:x_eye_cam + 60]
             eye_frame = cv2.resize(eye_frame, (200, 200))
 
 
-
-
-            # choose one of the four landmark around the eye
-            if id == 8:
+            # we do this if to make sure the y and x of the eye is some value in the screen
+            # i dont know if this is surely the best method to do this. Maybe there is some
+            # better way to do this
+            if id == 3:
                 # calculations to match the eye location to the current 
                 # screen in your computer
                 screen_x = screen_w / frame_w * x
@@ -87,9 +87,17 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    cv2.imshow('eye', eye_frame)        
+    # screen of the eye
+    cv2.imshow('eye', eye_frame)
+
+    # screen of the webcam        
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
    
 cam.release()
 cv2.destroyAllWindows()
+
+# Mesh points
+# Left eye = 469:474
+# Right eye = 474: 478
+# Right point from eye 285:287 // mostly for the camera
