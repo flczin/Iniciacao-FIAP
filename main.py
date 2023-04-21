@@ -63,7 +63,7 @@ while True:
 
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
-
+   
 cam.release()
 cv2.destroyAllWindows()
 
