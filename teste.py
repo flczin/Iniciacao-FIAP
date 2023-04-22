@@ -20,13 +20,13 @@ y = 0
 while True:
     # get the frame of the camera.
     _, frame = cam.read()
-    
+
     # flips the camera to match (letf -> left)
     frame = cv2.flip(frame, 1)
 
     # turns the video to grayscale colors, so it's easier to process.
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
+
     # return the landmarks in the face detected.
     output = face_mesh.process(gray_frame)
 
@@ -42,7 +42,7 @@ while True:
         # points in the face for both eye and the point where the camera will follow
         # prob has better way to do this and maybe it wont perform like suck
         points = landmarks[285:287] + landmarks[474:478]
-        
+
         # iterate from the points in the face
         for id, landmark in enumerate(points):
 
@@ -56,7 +56,7 @@ while True:
             if id in range(2, 6):
                 x = int(landmark.x * frame_w)
                 y = int(landmark.y * frame_h)
-            
+
             # draw the landmarks around the eye
             # frame: the window where the cv2 will draw. So it's the webcam screen
             # (x, y): the coordnates of the circle where it should draw
@@ -68,7 +68,6 @@ while True:
             # the values is the range of the camera. [start]:[to]
             eye_frame = frame[y_eye_cam - 20:y_eye_cam + 45, x_eye_cam:x_eye_cam + 60]
             eye_frame = cv2.resize(eye_frame, (200, 200))
-
 
             # we do this if to make sure the y and x of the eye is some value in the screen
             # i dont know if this is surely the best method to do this. Maybe there is some
@@ -82,7 +81,6 @@ while True:
                 # move the cursor to the calculated x and y
                 pyautogui.moveTo(screen_x, screen_y)
 
-
     # stops programam when 'Q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -93,7 +91,7 @@ while True:
     # screen of the webcam        
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
-   
+
 cam.release()
 cv2.destroyAllWindows()
 
