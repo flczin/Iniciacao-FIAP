@@ -75,6 +75,9 @@ while True:
             if id == 3:
                 # calculations to match the eye location to the current 
                 # screen in your computer
+                # change the screen w and h to 200 more or less to make the frame to move more than it should
+                # normaly. See if this is what is really happening. Because frame * x or y is the landmark
+                # because up there we can see we mult the landmark by its frame. Well se if is really true. lol
                 screen_x = screen_w / frame_w * x
                 screen_y = screen_h / frame_h * y
 
@@ -85,15 +88,29 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    # screen of the eye
-    cv2.imshow('eye', eye_frame)
+    # Its here just for the start of the cam, because if we dont have this,
+    # when starting it wont have any eey_frame and then it will throw a error
+    # if there is no ladmarks, there will be no eye_frame
+    # and if there is no verifications, it will break when starting.
+    if landmark_points:
+        # screen of the eye
+        cv2.imshow('eye', eye_frame)
 
-    # screen of the webcam        
+    # screen of the webcam
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
 
 cam.release()
 cv2.destroyAllWindows()
+
+# FIX:
+# the camera following the eye, does not resize accordign to the distance of the person
+# so if the person is too close to the camera, the camera is possible to not get the
+# eye of the person
+# Possible fix is in line 69 where the resize of the camera is happening
+# Possible fix in line in line 44 where we have a concat of 2 arrays.
+# right now that operation is not very good performance wise, so maybe we have a better
+# way to do that?
 
 # Mesh points
 # Left eye = 469:474
