@@ -82,7 +82,15 @@ while True:
                 screen_y = screen_h / frame_h * y
 
                 # move the cursor to the calculated x and y
-                pyautogui.moveTo(screen_x, screen_y)
+
+                if screen_x > 1200:
+                    pyautogui.press('right')
+                if screen_x < 700:
+                    pyautogui.press('left')
+
+                # use this here when choosing a game, maybe, and when the screen is pause mode
+                # when the player is gaming the commands will change.
+                # pyautogui.moveTo(screen_x, screen_y)
 
     # stops programam when 'Q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
