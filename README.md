@@ -5,6 +5,8 @@ Instalar as bibliotecas necessárias
 ```bash
 $ pip install -r requirements.txt
 ```
+Taken inspuration from: <br>
+https://github.com/Asadullah-Dal17/Eyes-Position-Estimator-Mediapipe
 
 A versão do opencv-python é a 4.5.5.62 por causa de bugs no auto complete dela. Se estiver ocorrendo bugs, desinstalar essa versão
 e instalar a versão mais nova 4.7.0.72.
