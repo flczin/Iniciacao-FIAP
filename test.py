@@ -19,6 +19,8 @@ y_eye_cam = 0
 x = 0
 y = 0
 
+downclick = False
+
 while True:
     # get the frame of the camera.
     _, frame = cam.read()
@@ -86,10 +88,23 @@ while True:
                 # move the cursor to the calculated x and y
 
                 # Command to move the car in the game
-                if screen_x > 1200:
+                # for now because of the hard code values, the best option is to be at arm's lenght from
+                # the camera, and try to move your head accordingly, the same aplies you will need to be
+                # at somewhat the center of the camera. (NEED TO FIX), because of my tight schedule,
+                # not possible right now, and would like to see some solutions.
+
+                if screen_x > 1100 and not downclick:
                     pyautogui.press('right')
-                if screen_x < 900:
+                    print("right")
+                    downclick = True
+
+                if screen_x < 1000 and not downclick:
                     pyautogui.press('left')
+                    print("left")
+                    downclick = True
+
+                if 1000 <= screen_x <= 1100 and downclick:
+                    downclick = False
 
                 # use this here when choosing a game, maybe, and when the screen is pause mode
                 # when the player is gaming the commands will change.
@@ -113,60 +128,6 @@ while True:
 
 cam.release()
 cv2.destroyAllWindows()
-
-# functions taken from
-# https://medium.com/@aiphile/eyes-blink-detector-and-counter-mediapipe-a66254eb002c
-# Blinking Ratio
-def blinkRatio(img, landmarks, right_indices, left_indices):
-    # Right eyes
-    # horizontal line
-    rh_right = landmarks[right_indices[0]]
-    rh_left = landmarks[right_indices[8]]
-    # vertical line
-    rv_top = landmarks[right_indices[12]]
-    rv_bottom = landmarks[right_indices[4]]
-    # draw lines on right eyes
-    # cv.line(img, rh_right, rh_left, utils.GREEN, 2)
-    # cv.line(img, rv_top, rv_bottom, utils.WHITE, 2)
-    # LEFT_EYE
-    # horizontal line
-    lh_right = landmarks[left_indices[0]]
-    lh_left = landmarks[left_indices[8]]
-    # vertical line
-    lv_top = landmarks[left_indices[12]]
-    lv_bottom = landmarks[left_indices[4]]
-    # Finding Distance Right Eye
-    rhDistance = euclaideanDistance(rh_right, rh_left)
-    rvDistance = euclaideanDistance(rv_top, rv_bottom)
-    # Finding Distance Left Eye
-    lvDistance = euclaideanDistance(lv_top, lv_bottom)
-    lhDistance = euclaideanDistance(lh_right, lh_left)
-    # Finding ratio of LEFT and Right Eyes
-    reRatio = rhDistance / rvDistance
-    leRatio = lhDistance / lvDistance
-    ratio = (reRatio + leRatio) / 2
-    return ratio
-
-
-# Euclaidean distance
-def euclaideanDistance(point, point1):
-    x1, y1 = point
-    x2, y2 = point1
-    distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-    return distance
-
-
-def landmarksDetection(img, results, draw=False):
-    img_height, img_width = img.shape[:2]
-    # list[(x,y), (x,y)....]
-    mesh_coord = [(int(point.x * img_width), int(point.y * img_height)) for point in
-                  results.multi_face_landmarks[0].landmark]
-
-    if draw:
-        [cv.circle(img, p, 2, (0, 255, 0), -1) for p in mesh_coord]
-
-    # returning the list of tuples for each landmark
-    return mesh_coord
 
 # FIX:
 # the camera following the eye, does not resize accordign to the distance of the person
