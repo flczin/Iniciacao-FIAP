@@ -1,8 +1,16 @@
 import math
-
 import cv2
 import mediapipe as mp
 import pyautogui
+from enum import Enum
+
+
+# Problably is better to name it screen than games
+class Games(Enum):
+    main_screen = 0
+    flappy = 1
+    car_game = 2
+
 
 # starts the camera. The number is the index of the cameras connected to your device.
 cam = cv2.VideoCapture(0)
@@ -20,6 +28,8 @@ x = 0
 y = 0
 
 downclick = False
+
+curr_screen = Games.flappy
 
 while True:
     # get the frame of the camera.
@@ -93,18 +103,40 @@ while True:
                 # at somewhat the center of the camera. (NEED TO FIX), because of my tight schedule,
                 # not possible right now, and would like to see some solutions.
 
-                if screen_x > 1100 and not downclick:
-                    pyautogui.press('right')
-                    print("right")
-                    downclick = True
+                # verify this ifs if they need.
+                if curr_screen == Games.main_screen:
+                    # calculations to match the eye location to the current
+                    # screen in your computer
+                    screen_x = screen_w / frame_w * x
+                    screen_y = screen_h / frame_h * y
 
-                if screen_x < 1000 and not downclick:
-                    pyautogui.press('left')
-                    print("left")
-                    downclick = True
+                    # move the cursor to the calculated x and y
+                    pyautogui.moveTo(screen_x, screen_y)
 
-                if 1000 <= screen_x <= 1100 and downclick:
-                    downclick = False
+                if curr_screen == Games.car_game:
+                    # make a way to restart the game, and a way to leave the game to the main screen
+                    if screen_x > 1100 and not downclick:
+                        pyautogui.press('right')
+                        print("right")
+                        downclick = True
+
+                    if screen_x < 1000 and not downclick:
+                        pyautogui.press('left')
+                        print("left")
+                        downclick = True
+
+                    if 1000 <= screen_x <= 1100 and downclick:
+                        downclick = False
+
+                # this is the worst experience ever
+                if curr_screen == Games.flappy:
+                    if screen_y > 500 and not downclick:
+                        pyautogui.press("space")
+                        print("space")
+                        downclick = True
+
+                    if screen_y < 500 and downclick:
+                        downclick = False
 
                 # use this here when choosing a game, maybe, and when the screen is pause mode
                 # when the player is gaming the commands will change.

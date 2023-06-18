@@ -6,14 +6,20 @@ import random
 TELA_LARGURA = 500
 TELA_ALTURA = 900
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
-IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join(
+    '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'pipe.png')))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join(
+    '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'base.png')))
+IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join(
+    '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'bg.png')))
 IMAGENS_PASSARO = [
 
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird2.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird3.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(
+        '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'bird1.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(
+        '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'bird2.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(
+        '../../../../../../../../../Users/lucas/Downloads/flappy/imgs', 'bird3.png'))),
 ]
 
 pygame.font.init()
