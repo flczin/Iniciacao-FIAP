@@ -6,14 +6,15 @@ import random
 TELA_LARGURA = 500
 TELA_ALTURA = 900
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
-IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
+assets_dir = os.path.join(os.path.dirname(__file__), 'imgs')
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'pipe.png')))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'base.png')))
+IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bg.png')))
 IMAGENS_PASSARO = [
 
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird2.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird3.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird1.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird2.png'))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird3.png'))),
 ]
 
 pygame.font.init()
@@ -45,7 +46,7 @@ class Passaro:
     def mover(self):
         # calcular o deslocamento
         self.tempo += 1
-        deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
+        deslocamento = 1.5 * (self.tempo ** 2) + self.velocidade * self.tempo
 
         # restringir o deslocamento
         if deslocamento > 16:
@@ -69,20 +70,20 @@ class Passaro:
 
         if self.contagem_imagem < self.TEMPO_ANIMACAO:
             self.imagem = self.IMGS[0]
-        elif self.contagem_imagem < self.TEMPO_ANIMACAO*2:
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 2:
             self.imagem = self.IMGS[1]
-        elif self.contagem_imagem < self.TEMPO_ANIMACAO*3:
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 3:
             self.imagem = self.IMGS[2]
-        elif self.contagem_imagem < self.TEMPO_ANIMACAO*4:
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 4:
             self.imagem = self.IMGS[1]
-        elif self.contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
+        elif self.contagem_imagem >= self.TEMPO_ANIMACAO * 4 + 1:
             self.imagem = self.IMGS[0]
             self.contagem_imagem = 0
 
         # se o passaro tiver caindo não bater asa
         if self.angulo <= -80:
             self.imagem = self.IMGS[1]
-            self.contagem_imagem = self.TEMPO_ANIMACAO*2
+            self.contagem_imagem = self.TEMPO_ANIMACAO * 2
 
         # desenhar a imagem
         imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
@@ -114,7 +115,7 @@ class Cano:
         self.pos_base = self.altura + self.DISTANCIA
 
     def mover(self):
-        self. x -= self.VELOCIDADE
+        self.x -= self.VELOCIDADE
 
     def desenhar(self, tela):
         tela.blit(self.CANO_TOPO, (self.x, self.pos_topo))
@@ -168,13 +169,13 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     for cano in canos:
         cano.desenhar(tela)
 
-    texto = fonte_pontos.render(f"Pontuação:{pontos}", 1, (255,255,255))
+    texto = fonte_pontos.render(f"Pontuação:{pontos}", 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
     chao.desenhar(tela)
     pygame.display.update()
 
 
-def main():
+def main_flappy():
     passaros = [Passaro(230, 350)]
     chao = Chao(730)
     canos = [Cano(700)]
@@ -205,6 +206,9 @@ def main():
                         canos = [Cano(700)]
                         pontos = 0
                         jogo_ativo = True
+                if evento.key == pygame.K_ESCAPE:
+                    from games import main_menu
+                    main_menu.main_menu()
 
         if jogo_ativo:
             for passaro in passaros:
@@ -238,4 +242,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main_flappy()
