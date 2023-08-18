@@ -2,6 +2,7 @@ import math
 import cv2
 import mediapipe as mp
 import pyautogui
+import datetime
 from enum import Enum
 
 
@@ -29,8 +30,14 @@ y = 0
 
 downclick = False
 
-curr_screen = Games.flappy
-
+#curr_screen = Games.flappy
+curr_screen = Games.car_game
+screen_x_atual=0
+screen_x_anterior=0
+pos_atual="C"
+ttl = datetime.datetime.now();
+print(ttl)
+print(ttl.time())
 while True:
     # get the frame of the camera.
     _, frame = cam.read()
@@ -82,7 +89,7 @@ while True:
             # the values is the range of the camera. [start]:[to]
             eye_frame = frame[y_eye_cam - 20:y_eye_cam + 45, x_eye_cam:x_eye_cam + 60]
             eye_frame = cv2.resize(eye_frame, (200, 200))
-
+        
             # we do this if to make sure the y and x of the eye is some value in the screen
             # i dont know if this is surely the best method to do this. Maybe there is some
             # better way to do this
@@ -115,18 +122,45 @@ while True:
 
                 if curr_screen == Games.car_game:
                     # make a way to restart the game, and a way to leave the game to the main screen
-                    if screen_x > 1100 and not downclick:
-                        pyautogui.press('right')
-                        print("right")
-                        downclick = True
 
-                    if screen_x < 1000 and not downclick:
-                        pyautogui.press('left')
-                        print("left")
-                        downclick = True
+                    screen_x_anterior = screen_x_atual
+                    screen_x_atual = screen_x
+                    diff=screen_x_atual-screen_x_anterior
+                    duration = datetime.datetime.now() - ttl
+                    if(diff)>5 and duration.total_seconds() > 1.0:
+                            pyautogui.press('right')
+                            print("right")
+                            downclick = True
+                            if(pos_atual=="C"):
+                                 print("direita")
+                                 pos_atual="D"
+                            if(pos_atual=="E"):
+                                 print("centro")
+                                 pos_atual="C"
+                            ttl = datetime.datetime.now()     
+                    if(diff)<-5 and duration.total_seconds() > 1.0:
+                            pyautogui.press('left')
+                            print("left")
+                            downclick = True
+                            if(pos_atual=="C"):
+                                 print("esquerda")
+                                 pos_atual="E"
+                            if(pos_atual=="D"):
+                                 print("centro")
+                                 pos_atual="C"
+                            ttl = datetime.datetime.now()     
+     #               if screen_x > 1100 and not downclick:
+     #                   pyautogui.press('right')
+     #                   print("right")
+     #                   downclick = True
 
-                    if 1000 <= screen_x <= 1100 and downclick:
-                        downclick = False
+     #               if screen_x < 1000 and not downclick:
+     #                   pyautogui.press('left')
+     #                   print("left")
+     #                   downclick = True
+
+     #               if 1000 <= screen_x <= 1100 and downclick:
+     #                   downclick = False
 
                 # this is the worst experience ever
                 if curr_screen == Games.flappy:
