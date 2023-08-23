@@ -1,6 +1,17 @@
+import math
 import cv2
 import mediapipe as mp
 import pyautogui
+import datetime
+from enum import Enum
+
+
+# Problably is better to name it screen than games
+class Games(Enum):
+    main_screen = 0
+    flappy = 1
+    car_game = 2
+
 
 # starts the camera. The number is the index of the cameras connected to your device.
 cam = cv2.VideoCapture(0)
@@ -11,11 +22,24 @@ face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
 # size of your current screen
 screen_w, screen_h = pyautogui.size()
 
-x_eye = 0
-y_eye = 0
+# variables to make it possible to use outside the scope
+x_eye_cam = 0
+y_eye_cam = 0
 x = 0
 y = 0
 
+downclick = False
+
+curr_screen = Games.flappy
+# curr_screen = Games.car_game
+screen_x_atual = 0
+screen_x_anterior = 0
+screen_y_atual = 0
+screen_y_anterior = 0
+pos_atual = "C"
+ttl = datetime.datetime.now();
+print(ttl)
+print(ttl.time())
 while True:
     # get the frame of the camera.
     _, frame = cam.read()
@@ -38,23 +62,21 @@ while True:
         # pick only the landmarks of the first detected face
         landmarks = landmark_points[0].landmark
 
+        # points in the face for both eye and the point where the camera will follow
         # prob has better way to do this and maybe it wont perform like suck
         points = landmarks[285:287] + landmarks[474:478]
 
-        # loops over landmarks 474-478 (correspond to the four landmarks around the eye
-        # for id, landmark in enumerate(landmarks[474:478]):
-        # two eyes gettted
-        # for id, landmark in enumerate(landmarks[469:478]):
-        # eye lid
-        # for id, landmark in enumerate(landmarks[253:260]):
+        # iterate from the points in the face
         for id, landmark in enumerate(points):
 
-            # stores last position of the landmarks escaling to the frame size
+            # id of landmark for the camera (it can be either 0 or 1)
+            # change for what suits best for you
             if id == 0:
-                x_eye = int(landmark.x * frame_w)
-                y_eye = int(landmark.y * frame_h)
+                x_eye_cam = int(landmark.x * frame_w)
+                y_eye_cam = int(landmark.y * frame_h)
 
-            if id in range(3, 7):
+            # calculate the points of the eye in the frame of the camera (its what is most likely)
+            if id in range(2, 6):
                 x = int(landmark.x * frame_w)
                 y = int(landmark.y * frame_h)
 
@@ -65,41 +87,130 @@ while True:
             # last one is color
             cv2.circle(frame, (x, y), 3, (0, 255, 0))
 
-            eye_frame = frame[y_eye - 20:y_eye + 45, x_eye:x_eye + 60]
+            # make another frame that will follow the eye.
+            # the values is the range of the camera. [start]:[to]
+            eye_frame = frame[y_eye_cam - 20:y_eye_cam + 45, x_eye_cam:x_eye_cam + 60]
             eye_frame = cv2.resize(eye_frame, (200, 200))
 
-            print(eye_frame)
-
-            # choose one of the four landmark around the eye
-            if id == 8:
+            # we do this if to make sure the y and x of the eye is some value in the screen
+            # i dont know if this is surely the best method to do this. Maybe there is some
+            # better way to do this
+            if id == 3:
                 # calculations to match the eye location to the current
                 # screen in your computer
+                # change the screen w and h to 200 more or less to make the frame to move more than it should
+                # normaly. See if this is what is really happening. Because frame * x or y is the landmark
+                # because up there we can see we mult the landmark by its frame. Well se if is really true. lol
                 screen_x = screen_w / frame_w * x
                 screen_y = screen_h / frame_h * y
 
                 # move the cursor to the calculated x and y
-                pyautogui.moveTo(screen_x, screen_y)
+
+                # Command to move the car in the game
+                # for now because of the hard code values, the best option is to be at arm's lenght from
+                # the camera, and try to move your head accordingly, the same aplies you will need to be
+                # at somewhat the center of the camera. (NEED TO FIX), because of my tight schedule,
+                # not possible right now, and would like to see some solutions.
+
+                # verify this ifs if they need.
+                if curr_screen == Games.main_screen:
+                    # calculations to match the eye location to the current
+                    # screen in your computer
+                    screen_x = screen_w / frame_w * x
+                    screen_y = screen_h / frame_h * y
+
+                    # move the cursor to the calculated x and y
+                    pyautogui.moveTo(screen_x, screen_y)
+
+                    # make a way to restart the game, and a way to leave the game to the main screen
+                screen_x_anterior = screen_x_atual
+                screen_x_atual = screen_x
+                diff = screen_x_atual - screen_x_anterior
+                duration = datetime.datetime.now() - ttl
+                if diff > 5 and duration.total_seconds() > 1.0:
+                    pyautogui.press('right')
+                    print("right")
+                    downclick = True
+                    if pos_atual == "C":
+                        print("direita")
+                        pos_atual = "D"
+                    if pos_atual == "E":
+                        print("centro")
+                        pos_atual = "C"
+                    ttl = datetime.datetime.now()
+                if diff < -5 and duration.total_seconds() > 1.0:
+                    pyautogui.press('left')
+                    print("left")
+                    downclick = True
+                    if pos_atual == "C":
+                        print("esquerda")
+                        pos_atual = "E"
+                    if pos_atual == "D":
+                        print("centro")
+                        pos_atual = "C"
+                    ttl = datetime.datetime.now()
+
+            # this is the worst experience ever
+                screen_y_anterior = screen_y_atual
+                screen_y_atual = screen_y
+                diff = screen_y_atual - screen_y_anterior
+                duration = datetime.datetime.now() - ttl
+                if diff > 3 and duration.total_seconds() > 1.0:
+                    pyautogui.press('down')
+                    print("down")
+                    downclick = True
+                    if pos_atual == "C":
+                        print("down")
+                        pos_atual = "D"
+                    if pos_atual == "U":
+                        print("center")
+                        pos_atual = "C"
+                    ttl = datetime.datetime.now()
+                if diff < -3 and duration.total_seconds() > 1.0:
+                    pyautogui.press('space')
+                    print("up")
+                    downclick = True
+                    if pos_atual == "C":
+                        print("up")
+                        pos_atual = "U"
+                    if pos_atual == "D":
+                        print("centro")
+                        pos_atual = "C"
+                    ttl = datetime.datetime.now()
+
+                # use this here when choosing a game, maybe, and when the screen is pause mode
+                # when the player is gaming the commands will change.
+                # pyautogui.moveTo(screen_x, screen_y)
 
     # stops programam when 'Q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    cv2.imshow('eye', eye_frame)
+    # Its here just for the start of the cam, because if we dont have this,
+    # when starting it wont have any eey_frame and then it will throw a error
+    # if there is no ladmarks, there will be no eye_frame
+    # and if there is no verifications, it will break when starting.
+    if landmark_points:
+        # screen of the eye
+        cv2.imshow('eye', eye_frame)
+
+    # screen of the webcam
     cv2.imshow('Eye Controlled Mouse', frame)
     cv2.waitKey(1)
 
 cam.release()
 cv2.destroyAllWindows()
 
-# instead of making the center o the screen the middle, maybe we can make the
-# person look to a point than after storing the data of how she should look at 
-# the middle and some extremities, we can calculate how much she moves and than
-# make the movement acordiling.
+# FIX:
+# the camera following the eye, does not resize accordign to the distance of the person
+# so if the person is too close to the camera, the camera is possible to not get the
+# eye of the person
+# Possible fix is in line 69 where the resize of the camera is happening
+# Possible fix in line in line 44 where we have a concat of 2 arrays.
+# right now that operation is not very good performance wise, so maybe we have a better
+# way to do that?
 
-# Use 2 eyes of only 1
-
-# Prob 2 i believe
-
-# we could make the screen with the (0,0) instead of top left, in the middle,
-# so we could multiply the screen with a variable to make the cursor to move 
-# more than normal.
+# Mesh points
+# Left eye = 469:474
+# Right eye = 474: 478
+# Right point from eye 285:287 // mostly for the camera
