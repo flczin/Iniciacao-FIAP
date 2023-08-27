@@ -11,7 +11,6 @@ IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'base.png')))
 IMAGEM_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bg.png')))
 IMAGENS_PASSARO = [
-
     pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird1.png'))),
     pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird2.png'))),
     pygame.transform.scale2x(pygame.image.load(os.path.join(assets_dir, 'bird3.png'))),

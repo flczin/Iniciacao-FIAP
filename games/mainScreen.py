@@ -1,7 +1,14 @@
+import time
+
+import pyautogui
 import pygame
+from cv2 import VideoCapture
 from games.flappy.fly import main_flappy
 from games.car_game.car_game import main_car
 import os
+import cv2
+from test import Games, getPositions
+from threading import Thread
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -9,6 +16,27 @@ pygame.init()
 # Initialize screen
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Main Menu")
+cam = cv2.VideoCapture(0)
+
+
+class EyeTrackerThread(Thread):
+    def __init__(self, camera: VideoCapture, curr_screen: Games):
+        Thread.__init__(self)
+        self.cam = camera
+        self.screen = curr_screen
+        self.running = True
+
+    def run(self):
+        while self.running:
+            getPositions(self.cam, self.screen)
+
+    def stop(self):
+        self.running = False
+
+
+flappy_tracker = EyeTrackerThread(cam, Games.flappy)
+car_tracker = EyeTrackerThread(cam, Games.car_game)
+main_screen_tracker = EyeTrackerThread(cam, Games.main_screen)
 
 
 def main_menu():
@@ -17,6 +45,8 @@ def main_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
+        # main_screen_tracker.start()
 
         screen.fill((255, 255, 255))
 
@@ -38,10 +68,16 @@ def main_menu():
         mouse_clicked = pygame.mouse.get_pressed()
 
         if game1_button.collidepoint(mouse_pos) and mouse_clicked[0]:
+            # main_screen_tracker.stop()
+            flappy_tracker.start()
             main_flappy()  # Start game 1
+            flappy_tracker.stop()
 
         if game2_button.collidepoint(mouse_pos) and mouse_clicked[0]:
+            # main_screen_tracker.stop()
+            car_tracker.start()
             main_car()  # Start game 2
+            car_tracker.stop()
 
 
 if __name__ == "__main__":

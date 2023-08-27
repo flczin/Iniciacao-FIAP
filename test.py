@@ -15,9 +15,6 @@ class Games(Enum):
     car_game = 2
 
 
-camera = cv2.VideoCapture(0)
-
-
 # get the frame of the camera.
 def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
     # starts the camera. The number is the index of the cameras connected to your device.
@@ -33,8 +30,7 @@ def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
 
     downclick = False
 
-    curr_screen = screen
-    # curr_screen = Games.car_game
+    # screen = Games.car_game
     screen_x = 0
     screen_y = 0
     screen_x_atual = 0
@@ -119,7 +115,7 @@ def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
                 # not possible right now, and would like to see some solutions.
 
                 # verify this ifs if they need.
-                if curr_screen == Games.main_screen:
+                if screen == Games.main_screen:
                     # calculations to match the eye location to the current
                     # screen in your computer
                     screen_x = screen_w / frame_w * x
@@ -128,7 +124,7 @@ def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
                     # move the cursor to the calculated x and y
                     pyautogui.moveTo(screen_x, screen_y)
 
-                if curr_screen == Games.car_game:
+                if screen == Games.car_game:
                     # make a way to restart the game, and a way to leave the game to the main screen
                     screen_x_anterior = screen_x_atual
                     screen_x_atual = screen_x
@@ -158,7 +154,7 @@ def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
                         ttl = datetime.datetime.now()
 
                 # this is the worst experience ever
-                if curr_screen == Games.flappy:
+                if screen == Games.flappy:
                     screen_y_anterior = screen_y_atual
                     screen_y_atual = screen_y
                     diff = screen_y_atual - screen_y_anterior
@@ -188,23 +184,26 @@ def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
 
     return screen_x, screen_y
 
+
 # use this here when choosing a game, maybe, and when the screen is pause mode
 # when the player is gaming the commands will change.
 # pyautogui.moveTo(screen_x, screen_y)
 
+if __name__ == '__main__':
+    camera = cv2.VideoCapture(0)
 
-while True:
-    pos_x, pos_y = getPositions(camera, Games.car_game)
+    while True:
+        pos_x, pos_y = getPositions(camera, Games.car_game)
 
-    print("Position x: " + str(pos_x))
-    print("Position y: " + str(pos_y))
+        # print("Position x: " + str(pos_x))
+        # print("Position y: " + str(pos_y))
 
-    # stops programam when 'Q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        # stops programam when 'Q' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-camera.release()
-cv2.destroyAllWindows()
+    camera.release()
+    cv2.destroyAllWindows()
 
 # Its here just for the start of the cam, because if we dont have this,
 # when starting it wont have any eey_frame and then it will throw a error
