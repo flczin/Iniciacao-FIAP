@@ -5,6 +5,8 @@ import pyautogui
 import datetime
 from enum import Enum
 
+from cv2 import VideoCapture
+
 
 # Problably is better to name it screen than games
 class Games(Enum):
@@ -13,35 +15,39 @@ class Games(Enum):
     car_game = 2
 
 
-# starts the camera. The number is the index of the cameras connected to your device.
-cam = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0)
 
-# points of the mesh of the face. (cant explain it better)
-face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
 
-# size of your current screen
-screen_w, screen_h = pyautogui.size()
+# get the frame of the camera.
+def getPositions(camera_cv2: VideoCapture, screen: Games) -> tuple[int, int]:
+    # starts the camera. The number is the index of the cameras connected to your device.
+    cam = camera_cv2
 
-# variables to make it possible to use outside the scope
-x_eye_cam = 0
-y_eye_cam = 0
-x = 0
-y = 0
+    # points of the mesh of the face. (cant explain it better)
+    face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
 
-downclick = False
+    # size of your current screen
+    screen_w, screen_h = pyautogui.size()
 
-curr_screen = Games.flappy
-# curr_screen = Games.car_game
-screen_x_atual = 0
-screen_x_anterior = 0
-screen_y_atual = 0
-screen_y_anterior = 0
-pos_atual = "C"
-ttl = datetime.datetime.now();
-print(ttl)
-print(ttl.time())
-while True:
-    # get the frame of the camera.
+    # variables to make it possible to use outside the scope
+
+    downclick = False
+
+    curr_screen = screen
+    # curr_screen = Games.car_game
+    screen_x = 0
+    screen_y = 0
+    screen_x_atual = 0
+    screen_x_anterior = 0
+    screen_y_atual = 0
+    screen_y_anterior = 0
+    pos_atual = "C"
+    ttl = datetime.datetime.now()
+    x_eye_cam = 0
+    y_eye_cam = 0
+    x = 0
+    y = 0
+
     _, frame = cam.read()
 
     # flips the camera to match (letf -> left)
@@ -96,7 +102,7 @@ while True:
             # i dont know if this is surely the best method to do this. Maybe there is some
             # better way to do this
             if id == 3:
-                # calculations to match the eye location to the current 
+                # calculations to match the eye location to the current
                 # screen in your computer
                 # change the screen w and h to 200 more or less to make the frame to move more than it should
                 # normaly. See if this is what is really happening. Because frame * x or y is the landmark
@@ -180,28 +186,30 @@ while True:
                             pos_atual = "C"
                         ttl = datetime.datetime.now()
 
-                # use this here when choosing a game, maybe, and when the screen is pause mode
-                # when the player is gaming the commands will change.
-                # pyautogui.moveTo(screen_x, screen_y)
+    return screen_x, screen_y
+
+# use this here when choosing a game, maybe, and when the screen is pause mode
+# when the player is gaming the commands will change.
+# pyautogui.moveTo(screen_x, screen_y)
+
+
+while True:
+    pos_x, pos_y = getPositions(camera, Games.car_game)
+
+    print("Position x: " + str(pos_x))
+    print("Position y: " + str(pos_y))
 
     # stops programam when 'Q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    # Its here just for the start of the cam, because if we dont have this,
-    # when starting it wont have any eey_frame and then it will throw a error
-    # if there is no ladmarks, there will be no eye_frame
-    # and if there is no verifications, it will break when starting.
-    if landmark_points:
-        # screen of the eye
-        cv2.imshow('eye', eye_frame)
-
-    # screen of the webcam
-    cv2.imshow('Eye Controlled Mouse', frame)
-    cv2.waitKey(1)
-
-cam.release()
+camera.release()
 cv2.destroyAllWindows()
+
+# Its here just for the start of the cam, because if we dont have this,
+# when starting it wont have any eey_frame and then it will throw a error
+# if there is no ladmarks, there will be no eye_frame
+# and if there is no verifications, it will break when starting.
 
 # FIX:
 # the camera following the eye, does not resize accordign to the distance of the person
