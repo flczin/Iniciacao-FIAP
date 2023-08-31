@@ -1,3 +1,5 @@
+import time
+
 import pygame
 from games.flappy.fly import main_flappy
 from games.car_game.car_game import main_car
@@ -66,6 +68,7 @@ def main_menu():
             main_screen.kill()
             main_screen = None
             flappy = Tracker(flappy_cmd)
+            time.sleep(2)  # loading to have the time of the tracker to start
             main_flappy()  # Start game 1
             flappy.kill()
 
@@ -73,6 +76,7 @@ def main_menu():
             main_screen.kill()
             main_screen = None
             car_game = Tracker(car_game_cmd)
+            time.sleep(2)  # loading to have the time of the tracker to start
             main_car()  # Start game 2
             car_game.kill()
 
