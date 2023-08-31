@@ -37,7 +37,7 @@ screen_x_anterior = 0
 screen_y_atual = 0
 screen_y_anterior = 0
 pos_atual = "C"
-ttl = datetime.datetime.now();
+ttl = datetime.datetime.now()
 print(ttl)
 print(ttl.time())
 while True:
