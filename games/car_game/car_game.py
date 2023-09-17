@@ -204,15 +204,17 @@ def main_car():
 
         # display game over
         if gameover:
-            screen.blit(crash, crash_rect)
+            pygame.quit()
+            break
+            # screen.blit(crash, crash_rect)
 
-            pygame.draw.rect(screen, red, (0, 50, width, 100))
-
-            font = pygame.font.Font(pygame.font.get_default_font(), 16)
-            text = font.render('Game over. Play again? (Enter Y or N)', True, white)
-            text_rect = text.get_rect()
-            text_rect.center = (width / 2, 100)
-            screen.blit(text, text_rect)
+            # pygame.draw.rect(screen, red, (0, 50, width, 100))
+            #
+            # font = pygame.font.Font(pygame.font.get_default_font(), 16)
+            # text = font.render('Game over. Play again? (Enter Y or N)', True, white)
+            # text_rect = text.get_rect()
+            # text_rect.center = (width / 2, 100)
+            # screen.blit(text, text_rect)
 
         pygame.display.update()
 

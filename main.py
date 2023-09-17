@@ -14,7 +14,7 @@ class Games(Enum):
 
 
 # starts the camera. The number is the index of the cameras connected to your device.
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
 # points of the mesh of the face. (cant explain it better)
 face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
@@ -38,8 +38,6 @@ screen_y_atual = 0
 screen_y_anterior = 0
 pos_atual = "C"
 ttl = datetime.datetime.now()
-print(ttl)
-print(ttl.time())
 while True:
     # get the frame of the camera.
     _, frame = cam.read()

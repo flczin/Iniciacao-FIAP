@@ -14,12 +14,15 @@ class Games(Enum):
     main_screen = 0
     flappy = 1
     car_game = 2
+    brick_game = 3
 
 
 argv = sys.argv[1:]
 game = ""
+value = ""
 try:
-    options, args = getopt.getopt(argv, "g:", ["game ="])
+    options, args = getopt.getopt(argv, "g:d:", ["game =",
+                                                 "dev ="])
 except:
     print("No enough arguments")
 
@@ -27,6 +30,13 @@ except:
 for name, value in options:
     if name in ["-g", "--game"]:
         game = value
+    if name in ["-d", "--dev"]:
+        dev = value
+
+
+def custom_print(printing):
+    if dev == "true":
+        print(printing)
 
 
 # get the frame of the camera.
@@ -145,24 +155,24 @@ def getPositions(camera_cv2: VideoCapture, screen: Games, curr_time: datetime, s
                     duration = datetime.datetime.now() - ttl
                     if diff > 5 and duration.total_seconds() > 1.0:
                         pyautogui.press('right')
-                        print("right")
+                        custom_print("right")
                         downclick = True
                         if pos_atual == "C":
-                            print("direita")
+                            custom_print("direita")
                             pos_atual = "D"
                         if pos_atual == "E":
-                            print("centro")
+                            custom_print("centro")
                             pos_atual = "C"
                         ttl = datetime.datetime.now()
                     if diff < -5 and duration.total_seconds() > 1.0:
                         pyautogui.press('left')
-                        print("left")
+                        custom_print("left")
                         downclick = True
                         if pos_atual == "C":
-                            print("esquerda")
+                            custom_print("esquerda")
                             pos_atual = "E"
                         if pos_atual == "D":
-                            print("centro")
+                            custom_print("centro")
                             pos_atual = "C"
                         ttl = datetime.datetime.now()
 
@@ -174,26 +184,39 @@ def getPositions(camera_cv2: VideoCapture, screen: Games, curr_time: datetime, s
                     duration = datetime.datetime.now() - ttl
                     if diff > 3 and duration.total_seconds() > 1.0:
                         pyautogui.press('down')
-                        print("down")
+                        custom_print("down")
                         downclick = True
                         if pos_atual == "C":
-                            print("down")
+                            custom_print("down")
                             pos_atual = "D"
                         if pos_atual == "U":
-                            print("center")
+                            custom_print("center")
                             pos_atual = "C"
                         ttl = datetime.datetime.now()
                     if diff < -3 and duration.total_seconds() > 1.0:
                         pyautogui.press('space')
-                        print("up")
+                        custom_print("up")
                         downclick = True
                         if pos_atual == "C":
-                            print("up")
+                            custom_print("up")
                             pos_atual = "U"
                         if pos_atual == "D":
-                            print("centro")
+                            custom_print("centro")
                             pos_atual = "C"
                         ttl = datetime.datetime.now()
+
+                if screen == Games.brick_game:
+                    # make a way to restart the game, and a way to leave the game to the main screen
+                    middle_screen_x = 980
+                    screen_x_atual = screen_x
+                    diff = screen_x_atual - middle_screen_x
+                    if diff > 5:
+                        pyautogui.press('right')
+                        custom_print("right")
+
+                    if diff < -5:
+                        pyautogui.press('left')
+                        custom_print("left")
 
     return screen_x, screen_y, ttl
 
@@ -224,3 +247,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# Make another flag so that instead of this approach, we will make the center of the screen the middle
+# and then after some ammount of movement of the eye, that we have the number, the game will be able
+# to input multiple times the game.

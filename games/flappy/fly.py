@@ -236,6 +236,9 @@ def main_flappy():
             for i, passaro in enumerate(passaros):
                 if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                     jogo_ativo = False
+        else:
+            pygame.quit()
+            break
 
         desenhar_tela(tela, passaros, canos, chao, pontos)
 
