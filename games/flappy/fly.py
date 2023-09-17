@@ -37,8 +37,13 @@ class Passaro:
         self.contagem_imagem = 0
         self.imagem = self.IMGS[0]
 
-    def pular(self):
-        self.velocidade = -10.5
+    def subir(self):
+        self.velocidade = -100
+        self.tempo = 0
+        self.altura = self.y
+
+    def cair(self):
+        self.velocidade = 1400
         self.tempo = 0
         self.altura = self.y
 
@@ -49,9 +54,9 @@ class Passaro:
 
         # restringir o deslocamento
         if deslocamento > 16:
-            deslocamento = 16
+            deslocamento = 80
         elif deslocamento < 0:
-            deslocamento -= 2
+            deslocamento = -80
 
         self.y += deslocamento
 
@@ -96,7 +101,7 @@ class Passaro:
 
 class Cano:
     DISTANCIA = 200
-    VELOCIDADE = 5
+    VELOCIDADE = 3
 
     def __init__(self, x):
         self.x = x
@@ -196,7 +201,12 @@ def main_flappy():
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_SPACE:
                     for passaro in passaros:
-                        passaro.pular()
+                        passaro.subir()
+                        passaro.mover()
+                if evento.key == pygame.K_DOWN:
+                    for passaro in passaros:
+                        passaro.cair()
+                        passaro.mover()
                 if evento.key == pygame.K_r:
                     if not jogo_ativo:
                         # Reinicia o jogo
@@ -210,8 +220,8 @@ def main_flappy():
                     main_menu.main_menu()
 
         if jogo_ativo:
-            for passaro in passaros:
-                passaro.mover()
+            #for passaro in passaros:
+                #passaro.mover()
             chao.mover()
 
             adicionar_cano = False
@@ -236,9 +246,6 @@ def main_flappy():
             for i, passaro in enumerate(passaros):
                 if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                     jogo_ativo = False
-        else:
-            pygame.quit()
-            break
 
         desenhar_tela(tela, passaros, canos, chao, pontos)
 

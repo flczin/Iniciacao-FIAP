@@ -14,7 +14,7 @@ class Games(Enum):
 
 
 # starts the camera. The number is the index of the cameras connected to your device.
-cam = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cam = cv2.VideoCapture(0)
 
 # points of the mesh of the face. (cant explain it better)
 face_mesh = mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
@@ -36,8 +36,11 @@ screen_x_atual = 0
 screen_x_anterior = 0
 screen_y_atual = 0
 screen_y_anterior = 0
-pos_atual = "C"
+pos_atual_v = "C"
+pos_atual_h = "C"
 ttl = datetime.datetime.now()
+print(ttl)
+print(ttl.time())
 while True:
     # get the frame of the camera.
     _, frame = cam.read()
@@ -125,27 +128,27 @@ while True:
                 screen_x_atual = screen_x
                 diff = screen_x_atual - screen_x_anterior
                 duration = datetime.datetime.now() - ttl
-                if diff > 5 and duration.total_seconds() > 1.0:
+                if diff > 5 and duration.total_seconds() > 0.5:
                     pyautogui.press('right')
                     print("right")
                     downclick = True
-                    if pos_atual == "C":
+                    if pos_atual_h == "C":
                         print("direita")
-                        pos_atual = "D"
-                    if pos_atual == "E":
-                        print("centro")
-                        pos_atual = "C"
+                        pos_atual_h = "D"
+                    if pos_atual_h == "E":
+                        print("centro_horizontal")
+                        pos_atual_h = "C"
                     ttl = datetime.datetime.now()
-                if diff < -5 and duration.total_seconds() > 1.0:
+                if diff < -5 and duration.total_seconds() > 0.5:
                     pyautogui.press('left')
                     print("left")
                     downclick = True
-                    if pos_atual == "C":
+                    if pos_atual_h == "C":
                         print("esquerda")
-                        pos_atual = "E"
-                    if pos_atual == "D":
-                        print("centro")
-                        pos_atual = "C"
+                        pos_atual_h = "E"
+                    if pos_atual_h == "D":
+                        print("centro_horizontal")
+                        pos_atual_h = "C"
                     ttl = datetime.datetime.now()
 
             # this is the worst experience ever
@@ -153,27 +156,27 @@ while True:
                 screen_y_atual = screen_y
                 diff = screen_y_atual - screen_y_anterior
                 duration = datetime.datetime.now() - ttl
-                if diff > 3 and duration.total_seconds() > 1.0:
+                if diff > 3 and duration.total_seconds() > 0.5:
                     pyautogui.press('down')
                     print("down")
                     downclick = True
-                    if pos_atual == "C":
+                    if pos_atual_v == "C":
                         print("down")
-                        pos_atual = "D"
-                    if pos_atual == "U":
-                        print("center")
-                        pos_atual = "C"
+                        pos_atual_v = "D"
+                    if pos_atual_v == "U":
+                        print("center_vertical")
+                        pos_atual_v = "C"
                     ttl = datetime.datetime.now()
-                if diff < -3 and duration.total_seconds() > 1.0:
+                if diff < -3 and duration.total_seconds() > 0.5:
                     pyautogui.press('space')
                     print("up")
                     downclick = True
-                    if pos_atual == "C":
+                    if pos_atual_v == "C":
                         print("up")
-                        pos_atual = "U"
-                    if pos_atual == "D":
-                        print("centro")
-                        pos_atual = "C"
+                        pos_atual_v = "U"
+                    if pos_atual_v == "D":
+                        print("centro_vertical")
+                        pos_atual_v = "C"
                     ttl = datetime.datetime.now()
 
                 # use this here when choosing a game, maybe, and when the screen is pause mode

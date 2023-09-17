@@ -42,6 +42,7 @@ def custom_print(printing):
 # get the frame of the camera.
 def getPositions(camera_cv2: VideoCapture, screen: Games, curr_time: datetime, screen_x_get: int, screen_y_get: int):
     # starts the camera. The number is the index of the cameras connected to your device.
+    global pos_atual_v
     cam = camera_cv2
 
     # points of the mesh of the face. (cant explain it better)
@@ -182,27 +183,27 @@ def getPositions(camera_cv2: VideoCapture, screen: Games, curr_time: datetime, s
                     screen_y_atual = screen_y
                     diff = screen_y_atual - screen_y_anterior
                     duration = datetime.datetime.now() - ttl
-                    if diff > 3 and duration.total_seconds() > 1.0:
+                    if diff > 3 and duration.total_seconds() > 0.5:
                         pyautogui.press('down')
-                        custom_print("down")
+                        print("down")
                         downclick = True
-                        if pos_atual == "C":
-                            custom_print("down")
-                            pos_atual = "D"
-                        if pos_atual == "U":
-                            custom_print("center")
-                            pos_atual = "C"
+                        if pos_atual_v == "C":
+                            print("down")
+                            pos_atual_v = "D"
+                        if pos_atual_v == "U":
+                            print("center_vertical")
+                            pos_atual_v = "C"
                         ttl = datetime.datetime.now()
-                    if diff < -3 and duration.total_seconds() > 1.0:
+                    if diff < -3 and duration.total_seconds() > 0.5:
                         pyautogui.press('space')
-                        custom_print("up")
+                        print("up")
                         downclick = True
-                        if pos_atual == "C":
-                            custom_print("up")
-                            pos_atual = "U"
-                        if pos_atual == "D":
-                            custom_print("centro")
-                            pos_atual = "C"
+                        if pos_atual_v == "C":
+                            print("up")
+                            pos_atual_v = "U"
+                        if pos_atual_v == "D":
+                            print("centro_vertical")
+                            pos_atual_v = "C"
                         ttl = datetime.datetime.now()
 
                 if screen == Games.brick_game:
