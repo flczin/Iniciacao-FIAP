@@ -22,11 +22,18 @@ class Tracker:
 
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
-pygame.init()
 
-# Initialize screen
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Main Menu")
+
+def init_pygame():
+    pygame.init()
+
+    # Initialize screen
+    screen_game = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Main Menu")
+    return screen_game
+
+
+screen = init_pygame()
 
 dev = True
 
@@ -45,7 +52,7 @@ main_screen = None
 
 
 def main_menu():
-    global main_screen
+    global main_screen, screen
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -93,6 +100,7 @@ def main_menu():
             time.sleep(5)  # loading to have the time of the tracker to start
             main_car()  # Start game 2
             car_game.kill()
+            screen = init_pygame()
 
         if game3_button.collidepoint(mouse_pos) and mouse_clicked[0]:
             main_screen.kill()

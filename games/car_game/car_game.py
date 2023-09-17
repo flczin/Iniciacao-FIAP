@@ -3,14 +3,19 @@ from pygame.locals import *
 import random
 import os
 
-pygame.init()
-
-# create the window
 width = 800
 height = 800
 screen_size = (width, height)
-screen = pygame.display.set_mode(screen_size)
-pygame.display.set_caption('Car Game')
+
+
+def init_pygame(screen_size):
+    pygame.init()
+
+    # create the window
+    screen_game = pygame.display.set_mode(screen_size)
+    pygame.display.set_caption('Car Game')
+    return screen_game
+
 
 # colors
 gray = (100, 100, 100)
@@ -99,6 +104,8 @@ crash_rect = crash.get_rect()
 # game loop
 def main_car():
     global lane_marker_move_y, speed, score, gameover
+    screen = init_pygame(screen_size)
+    print("screen initialized")
     running = True
     while running:
         clock.tick(fps)
