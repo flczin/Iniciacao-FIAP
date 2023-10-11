@@ -92,6 +92,7 @@ def main_menu():
             time.sleep(5)  # loading to have the time of the tracker to start
             main_flappy()  # Start game 1
             flappy.kill()
+            screen = init_pygame()
 
         if game2_button.collidepoint(mouse_pos) and mouse_clicked[0]:
             main_screen.kill()
@@ -109,6 +110,7 @@ def main_menu():
             time.sleep(5)  # loading to have the time of the tracker to start
             brick_main_start()  # Start game 3
             brick_game.kill()
+            screen = init_pygame()
 
 
 if __name__ == "__main__":
